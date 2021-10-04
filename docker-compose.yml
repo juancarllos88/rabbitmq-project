@@ -1,0 +1,26 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres:9.6'
+    container_name: postgres-dsdeliver
+    environment:
+      - POSTGRES_DB=dsdeliver
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234567
+      - TZ=GMT
+    volumes:
+      - './postgres/data:/var/lib/postgresql/data'
+    ports:
+      - '5432:5432'
+      
+  rabbitmq: 
+    image: 'rabbitmq:3-management'
+    container_name: rabbitmq
+    volumes:
+      - './dados-rabbitmq:/var/lib/rabbitmq/'
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
