@@ -1,0 +1,6 @@
+.idea/
+.vscode/
+rabbitmq-consumer-node/node_modules/
+rabbitmq-consumer-node/build/
+rabbitmq-consumer-node/temp/
+rabbitmq-consumer-node/dist
