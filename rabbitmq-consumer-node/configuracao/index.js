@@ -1,8 +1,8 @@
 const confRabbit = {
-  host: "localhost",
-  port: 5672,
-  username: "admin",
-  password: "admin",
+  host: process.env.RABBITMQ_HOST,
+  port: process.env.RABBITMQ_PORT,
+  username: process.env.RABBITMQ_USER,
+  password: process.env.RABBITMQ_PASSWORD,
 };
 
 module.exports = confRabbit;

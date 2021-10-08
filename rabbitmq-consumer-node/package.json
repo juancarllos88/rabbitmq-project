@@ -4,6 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "amqplib": "^0.8.0"
+    "amqplib": "^0.8.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  },
+  "scripts": {
+    "dev": "nodemon ./index.js"
+  },
+  "devDependencies": {
+    "node-env-run": "^4.0.2",
+    "nodemon": "^2.0.13"
   }
 }

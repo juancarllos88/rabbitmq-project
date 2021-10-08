@@ -24,3 +24,5 @@ amqp
 const imprimir = (mensagem) => {
   console.log(mensagem.content.toString());
 };
+
+module.exports = amqp;

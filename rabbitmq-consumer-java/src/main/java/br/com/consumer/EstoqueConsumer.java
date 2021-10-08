@@ -30,7 +30,7 @@ public class EstoqueConsumer {
 	@RabbitListener(queues = QUEUE_ESTOQUE, concurrency = "${parametros.rabbitmq.consumers}")
 	private void consumer(Message message) throws Exception {
 		String json = new String(message.getBody(), "UTF-8");
-		ObjectMapper mapper = new ObjectMapper();
+		mapper = new ObjectMapper();
 		EstoqueDto estoqueDto  = mapper.readValue(json, EstoqueDto.class);
 		log.info("Thread {} => Mensagem: {}", Thread.currentThread().getId(), estoqueDto.toString());
 	}
