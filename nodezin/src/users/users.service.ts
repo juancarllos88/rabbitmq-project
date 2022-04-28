@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { ClientProxy } from '@nestjs/microservices';
+import { RabbitmqService } from './../rabbitmq/services/rabbitmq.service';
+import { RequestUserDto } from './dto/request-user.dto';
+import { ResponseUserDto } from './dto/response-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
@@ -7,30 +10,67 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(
     @Inject('USERS_REPOSITORY')
-    private userRepository: typeof User,
+    private userRepository: typeof User, // @Inject('SUBSCRIBERS_AMQP') // private readonly subscribersService: ClientProxy,
   ) {}
-  async create(createUserDto: CreateUserDto) {
-    const user = {
-      name: createUserDto.name,
-      age: createUserDto.age,
-    };
-    await this.userRepository.create(user);
-    return createUserDto;
+
+  async create(requestUserDto: RequestUserDto): Promise<ResponseUserDto> {
+    const user = await this.userRepository.create({
+      name: requestUserDto.name,
+      age: requestUserDto.age,
+    });
+    return {
+      id: user.id,
+      name: user.name,
+      age: user.age,
+      createdAt: user.createdAt,
+    } as ResponseUserDto;
   }
 
-  findAll() {
-    return this.userRepository.findAll();
+  async findAll(): Promise<ResponseUserDto[]> {
+    const users = await this.userRepository.findAll();
+    const list = users.map((element) => {
+      return {
+        id: element.id,
+        name: element.name,
+        age: element.age,
+        createdAt: element.createdAt,
+        updatedAt: element.updatedAt,
+      };
+    });
+    //this.subscribersService.emit('hello', 'juan carlos');
+    return list;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number): Promise<ResponseUserDto> {
+    const user = await this.userRepository.findByPk(id);
+    return {
+      id: user.id,
+      name: user.name,
+      age: user.age,
+      createdAt: user.createdAt,
+    } as ResponseUserDto;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(
+    id: number,
+    requestUserDto: RequestUserDto,
+  ): Promise<[number, User[]]> {
+    const user = await this.userRepository.update(
+      {
+        name: requestUserDto.name,
+        age: requestUserDto.age,
+      },
+      { where: { id: id } },
+    );
+
+    return user;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    await this.userRepository.destroy({
+      where: {
+        id,
+      },
+    });
   }
 }

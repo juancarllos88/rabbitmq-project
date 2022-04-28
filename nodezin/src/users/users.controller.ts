@@ -8,9 +8,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { RequestUserDto } from './dto/request-user.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ResponseUserDto } from './dto/response-user.dto';
+import { User } from './entities/user.entity';
 
 @ApiTags('Users')
 @Controller('users')
@@ -21,29 +22,34 @@ export class UsersController {
     summary: '',
     description: 'Criar usuário',
   })
-  @ApiResponse({ status: 201, description: 'Created', type: CreateUserDto })
+  @ApiResponse({ status: 201, description: 'Created', type: ResponseUserDto })
   @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.create(createUserDto);
+  async create(
+    @Body() requestUserDto: RequestUserDto,
+  ): Promise<ResponseUserDto> {
+    return await this.usersService.create(requestUserDto);
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll(): Promise<ResponseUserDto[]> {
+    return await this.usersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  async findOne(@Param('id') id: number): Promise<ResponseUserDto> {
+    return await this.usersService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  async update(
+    @Param('id') id: string,
+    @Body() requestUserDto: RequestUserDto,
+  ): Promise<[number, User[]]> {
+    return await this.usersService.update(+id, requestUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  async remove(@Param('id') id: number) {
+    await this.usersService.remove(+id);
   }
 }

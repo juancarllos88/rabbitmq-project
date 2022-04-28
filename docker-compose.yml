@@ -24,3 +24,16 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
+      
+  mysql-nodezin:
+    container_name: mysql-nodezin
+    image: mysql
+    volumes:
+      - '../dados-mysql-nodezin:/var/lib/mysql'
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nodezin
+      MYSQL_USER: nodezin
+      MYSQL_PASSWORD: nodezin
